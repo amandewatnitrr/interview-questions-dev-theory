@@ -32,3 +32,38 @@
         class Meta:
             db_table = "Database"
     ```
+
+### What are views in Django??
+
+- Views in Django are functions that take a web request and return a web response.. This response can be a HTML Content or a query from the database or a redirect or error or any file.
+- Example:
+
+    ```python
+    from django.http import HttpResponse
+    def sample_view(request):
+        return HttpResponse("Hello World")
+    ```
+
+
+### What is Django ORM??
+
+- Django ORM(Object Relational Mapping) is a way to interact with the database using Python objects.
+- Using this actually minimises the use of SQL queries.
+
+### What is django-admin and manage.py??
+
+- `django-admin` is a command line utility that lets you interact with Django project.
+- A `manage.py` file is automatically created in each Django project. It is a thin wrapper around the `django-admin.py` that takes care of module settings for us, pointing to the `settings.py` file.
+
+### What is Jinja Templating??
+
+- Jinja is a templating engine for Python, which is used in Django.
+- It is easier to debug compared to other default engines.
+- It offers template inheritence.
+- Generates HTML Templates faster compared to other engines.
+- HTML Escaping - Some special characters have special values which can lead to XSS Attacks in Templating Engines. Jinja automatically deals with it.
+
+### Difference b/w project and app in Django??
+
+- Project is the entire django application.
+- While, app is just a small module inside the project with a uique use case.
