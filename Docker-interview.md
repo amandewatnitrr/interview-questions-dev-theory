@@ -348,4 +348,28 @@ services:
 
 - Using `docker swarm` we can perform live migration of containers between hosts.
 
-### How do you share data b/w containers
+### How do you share data b/w containers in Docker?
+
+- We can share data between containers in Docker using `-v` flag. This flag is used to create a volume in the container.
+- Example:
+
+  ```bash
+  docker run -d --name container1 -v /data alpine # Create a volume in container1
+  docker run -d --name container2 --volumes-from container1 alpine # Create a volume in container2 and share data from container1
+  ```
+
+### How Do You Debug Issues in a Docker Container?
+
+- We can debug issues in a Docker Container using the following ways:
+  - Container Logs: `docker logs <cid/>` helps in viewing the output and the error logs of the container.
+  - Interactive Shell: `docker exec -it <cid/> /bin/bash` helps in accessing the interactive shell inside the container.
+  - `docker attach`
+  - Inspect Container Details: `docker inspect <cid/>` helps in retreiving the detailed information about the container.
+  - `docker events`
+  - `docker top`
+  - `docker diff`
+  - `docker cp`
+  - `docker port`
+  - `docker stats`
+  - `docker system df`
+  - `docker system events`
