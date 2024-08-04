@@ -172,12 +172,12 @@
   - `Errors` have the errors that happended during the daemon process.
   - `Fatal` has the fatal errors that occured during the execution.
 
-### Difference b/w `Docker Image` and `Layer`.
+### Difference b/w `Docker Image` and `Layer`
 
 - A `Docker image` is a series or collection of layers of instructions containing dependencies, packages, and code required to create a executable software bundled together.
 - A `Layer` is a instruction corresponding to the instruction on the Dockerfile. Each instruction in the Dockerfile creates a layer in the image.
 
-### Difference b/w `COPY` and `ADD` in Docker.
+### Difference b/w `COPY` and `ADD` in Docker
 
 - Both `COPY` and `ADD` have same functionality, but `COPY` is preferred over `ADD` because it is more transparent.
 - `COPY` is used to copy files and directories from the host to the container.
@@ -198,7 +198,7 @@
 - Yes, we can use JSON instead of YAML for Docker Compose. We can use the `--file` or `-f` flag with the `docker-compose` command to specify the JSON file.
 - Example: `docker-compose -f docker-compose.json up`.
 
-### Describe the lifecycle of a Docker Container.
+### Describe the lifecycle of a Docker Container
 
 - The Different stages a container goes through from the creation of the container to it's end is called Docker Container Lifecycle.
   - Created: The container has just been created with a new name, but has not yet been started.
@@ -221,7 +221,6 @@
   - `|`: This is a pipe. It takes the output from the command on the left and, feeds it as input to the command on the right of the pipe.
   - `wc -l`: `wc` here is word count. And, `-l` flag specifies to count the number of lines in the output.
 
-
 ### What does `docker sytsem prune` command do??
 
 - The `docker system prune` command cleans docker by removing the unused data. This includes:
@@ -240,7 +239,6 @@
 - `Docker Swarm` is a clustering and orchestrating tool that runs on Docker Application.
 - It helps end-users to create and manage a cluster of Docker nodes as a single virtual system.
   
-
 ### How will you ensure `Container-1` runs before `Container-2` using docker-compose??
 
 - For this purpose we use the `depends_on` attribute with `docker-compose.yaml` file.
@@ -257,7 +255,6 @@
     db:
       image: postgres # Postgres will be the 1st Container to come up, and than the backend container will come up.
   ```
-
 
 ### Write a sample Dockerfile for a Python Application exposing on port 3000
 
@@ -313,7 +310,6 @@ services:
   - `Docker Stats`
   - `cAdvisor`
   
-
 ### What is load balancing?? How can we achieve load balancing in Docker?
 
 - Load Balancing is the process of distributing incoming network traffic across multiple servers.
@@ -365,11 +361,132 @@ services:
   - Interactive Shell: `docker exec -it <cid/> /bin/bash` helps in accessing the interactive shell inside the container.
   - `docker attach`
   - Inspect Container Details: `docker inspect <cid/>` helps in retreiving the detailed information about the container.
-  - `docker events`
-  - `docker top`
-  - `docker diff`
-  - `docker cp`
-  - `docker port`
-  - `docker stats`
-  - `docker system df`
-  - `docker system events`
+  - Event Reporting: `docker events` helps in viewing the events of the container.
+  - View Running Process: `docker top`
+  - Change Tracking: `docker diff <container-id/>` helps in tracking the changed files on a container filesystem.
+  - Port Mapping: `docker port <container-name/>` helps us view the port mapping of the container.
+  - Viewing stats: `docker stats` helps in viewing the stats of the containers which include it's memory usage, CPU Usage etc...
+  - View disk usage: `docker system df` helps view the Docker disk Usage.
+  - Real-Time Events: `docker system events` helps in viewing the real-time events of the container.
+
+### How do you manage Network Connectivity b/w Docker Containers and Host?
+
+- There are 5 types of networks in Docker:
+
+  - `Bridge` Network:
+
+    - Default network in Docker.
+    - Created When Docker Daemon starts.
+    - Through this, network containers on same bridge can communicate with each other.
+    - Example:
+
+        ```shell
+        docker network create <network-name>
+        docker run -d --name container1 --network <network-name> alpine
+        docker run -d --name container2 --network <network-name> alpine
+        docker network inspect <network-name> # Network Verification
+        docker exec -it container1 ping container2 # Ping container2 from container1 (Container to Container Communication)
+        ```
+
+  - `Host` Network:
+
+    - It removes the network isolation between the container and the Docker host.
+    - It uses the host's network directly.
+    - Example:
+
+        ```shell
+        docker run --rm --network host <container-name> <command> # This will make the container use the host network.
+        ```
+    
+  - `Custom` Network:
+
+    - Used to create isolated containers and control their communication.
+    - Containers can communicate with each other using the container name.
+    - This can be done using the `--driver` flag.
+    - Example:
+
+        ```shell
+        docker network create --driver bridge <network-name>
+        docker run -d --name container1 --network <network-name> alpine
+        docker run -d --name container2 --network <network-name> alpine
+        docker network inspect <network-name> # Network Verification
+        docker exec -it container1 ping container2 # Ping container2 from container1 (Container to Container Communication)
+        ```
+
+  - `Overlay` Network:
+
+    - This is used for Multi-Host Networking.
+    - It allows containers to communicate with each other across multiple Docker daemons.
+    - Can be created using the `docker network create` command using the `--driver overlay` flag.
+    - This is often used in Docker Swarm or Kubernetes Environment.
+    - Example:
+
+        ```shell
+        docker swarm init --advertise-addr <manager-ip> # manager-ip is IP Address advertised by manager node to other nodes.
+        # The --advertise-addr option specifies the address that the manager node uses 
+        # to advertise itself to other nodes in the swarm. 
+        # This address is used by worker nodes to communicate with the manager node,
+        # when they join the swarm and for ongoing coordination.
+        docker network create --driver overlay <network-name>
+        docker service create --name <service-name> --network <network-name> <image-name>
+        ```
+
+  - `Macvlan` Network:
+
+    - This driver assigns a MAC address to each container's network interface.
+    - This makes it appear as a physical device on the network.
+    - Containers can directly be accessed directly using their unique MAC Address.'
+    - Used in cases when the container needs to be on the same network as the host, and directly accessible.
+    - Example:
+
+        ```shell
+        docker network create -d macvlan --subnet=192.168.1.0/24 --gateway=192.168.1.1 \ -o parent=eth0 <netowrk-name>
+        docker run -d --name container1 --network <network-name> alpine
+        docker run -d --name container2 --network <network-name> alpine
+        docker network inspect <network-name> # Network Verification
+        ```
+
+### Is it a good practice to run Stateful Applications in Docker Containers?
+
+- Yes, it is a good practice to run Stateful Applications in Docker Containers.
+- Docker provides a way to store the data in the container using volumes.
+- But, the data needs to be stored outside the container, as the data inside the container is not persistent, so as to have backup of the data to avoid data loss.
+
+### How Docker Daemon and Docker Client communicate?
+
+- Docker Daemon and Docker Client communicate using the `REST API`.
+- Docker Client sends the commands to the Docker Daemon using API, which in turn executes the commands.
+
+### What is the purpose of using `docker checkpoint`?
+
+- The `docker checkpoint` command is used to create a checkpoint of a running container, including its state and memory.
+- It is useful for debugging and troubleshooting purposes.
+
+### How to limit the memory and CPU consumption of Docker??
+
+- We can limit the memory and CPU consumption of Docker using the following ways:
+  - `docker run --memory <memory-limit> --cpus <cpu-limit> <image-name>`
+  - `docker update --memory <memory-limit> --cpus <cpu-limit> <container-name>`
+
+### Difference b/w `docker restart` policies `no`, `always`, `on-failure`, and `unless-stopped`?
+
+- `no`: Never restart the container.
+- `always`: Always restart the container.
+- `on-failure`: Restart the container if it exits with a non-zero status.
+- `unless-stopped`: Always restart the container unless it is explicitly stopped.
+
+### Why is `docker system prune` used? What does it do?
+
+- The `docker system prune` command is used to clean up the unused data in Docker.
+- It removes the stopped containers, unused networks, and dangling images.
+- It helps in freeing up the disk space, and improving the performance of the Docker.
+
+### What are Docker Object Labels?
+
+- Docker Object Labels are key-value pairs that are used to attach metadata to Docker objects.
+- Example:
+
+  ```shell
+  docker run -d --name <container-name> --label env=prod alpine
+  docker inspect <container-name> # To view the labels
+  ```
