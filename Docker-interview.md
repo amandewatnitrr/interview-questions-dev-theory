@@ -397,7 +397,7 @@ services:
         ```shell
         docker run --rm --network host <container-name> <command> # This will make the container use the host network.
         ```
-    
+
   - `Custom` Network:
 
     - Used to create isolated containers and control their communication.
@@ -516,7 +516,6 @@ services:
 
 ### How does Docker Swarm work?
 
-
 ![](./imgs/docker-swarm-mode.webp)
 
 - When we want want to deploy a container in the swarm first, we have to launch services.
@@ -554,10 +553,98 @@ services:
 - A single manager node can have multiple worker nodes. But, a worker node cannot exist without a manager node.
 - The ideal number of manager node count is 7. Increasing the number of manager nodes does not mean a increase in scalability.
 
-
 ### Features of Docker Swarm
 
 1. Cluster Mangement: To create swarm, we can use `Docker Engine CLI` where we can deploy applications. Additional orchestration software is not required to manage a swarm.
-2. Multi-Host Networking: Swarm can containe multiple overlay networks, so while deploying the service you can specify the network on which you want to deploy your service. The swarm manager automatically assigns addresses to the containers on the overlay network when it initializes or updates the application.
+2. Multi-Host Networking: Swarm can contain multiple overlay networks, so while deploying the service you can specify the network on which you want to deploy your service. The swarm manager automatically assigns addresses to the containers on the overlay network when it initializes or updates the application.
 3. Load Balancing: While deploying a service on any specific port , the swarm automatically balances the load on the port.
 4. Scaling: When we scale up or down, the swarm manager automatcally adapts by adding or removing tasks to maintain the desired state.
+
+### What is Docker Swarm used for?
+
+- Docker swarm asures the high availability of the application by creating a container in another node if the container in one node fails.
+- Based on incoming traffic, it balances the load on the containers by distributing the traffic to the containers, in addition to scaling up and down the containers by adding or removing the containers.
+- It has number of security features including traffic encryption b/w nodes and utual TLS Authentication.
+- Automatically takes care of failed containers and nodes.
+
+### Modes of Docker Swarm
+
+- `Global Mode`
+
+  - It is used when we want to deploy a service on each node in the swarm.
+  - It maintains the service in all the slave and master nodes.
+  
+- `Replicated Mode`
+
+  - It is used when we want to deploy a service on a specific number of nodes in the swarm.
+  - It is used when we want a certain number of replicas of the service to be deployed.
+
+### What is stack in Docker Swarm?
+
+- A stack is a group of interrelated services that share dependencies, and can be orchestrated and scaled together.
+- It is deployed using a `docker-compose.yml` file.
+
+### Docker Swarm Mode CLI Commands
+
+- `docker swarm init [OPTIONS]`: Initialize a swarm.
+- `docker swarm join [OPTIONS] HOST:PORT`: Join a swarm as a node. The node can join as a manager or a worker based on the token we pass using the `--token` flag.
+- `docker service create [OPTIONS] IMAGE [COMMAND] [ARG...]`: Create a new service. And must be run on a manager node.
+- `docker service inspect [OPTIONS] SERVICE [SERVICE...]`: Display detailed information on one or more services.
+- `docker service ls [OPTIONS]`: List services.
+- `docker service rm [OPTIONS] SERVICE [SERVICE...]`: Remove one or more services.
+
+### Docker Container vs Docker Swarm vs Kubernetes
+
+<br/>
+<table align="center">
+  <tr>
+    <th>Docker Container</th>
+    <th>Docker Swarm</th>
+    <th>Kubernetes</th>
+  </tr>
+  <tr>
+    <td>It is a executable package that contains all the code, dependencies, libraries etc.. needed to run the application</td>
+    <td>It is a container orchestration tool that manages all the containers available in the Swarm Cluster.</td>
+    <td>It is a container orchestration tool that manages all the containers available in the Kubernetes Cluster.</td>
+  </tr>
+  <tr>
+    <td>It can be run on any OS.</td>
+    <td>It manages Docker Cluster which consist of Docker Nodes.</td>
+    <td>It manages Kubernetes Cluster which consist of Kubernetes Nodes.</td>
+  </tr>
+  <tr>
+    <td>A single isolated and self-contained unit is capable of running an application.</td>
+    <td>It is used to manage multiple containers in a cluster.</td>
+    <td>It is used to manage multiple containers in a cluster.</td>
+  </tr>
+  <tr>
+    <td>A single isolated and self-contained unit is capable of running an application.</td>
+    <td>Applications are deployed as a combination of services and tasks.</td>
+    <td>Applications are deployed as a combination of pods, Deployment, and services. </td>
+  </tr>
+  <tr>
+    <td>Docker containers are more suitable for microservices applications than monolithic applications.</td>
+    <td>Docker Swarm is more suitable for small to medium-sized applications.</td>
+    <td>Kubernetes is more suitable for large-scale applications.</td>
+  </tr>
+  <tr>
+    <td> - </td>
+    <td>Docker Swarm is used along with Docker Engine to run multiple containers on a single host, much more efficiently than running multiple VMs on the same host.</td>
+    <td>Kubernetes is used alongside Docker for better control and management of containers.</td>
+  </tr>
+  <tr>
+    <td> - </td>
+    <td>Docker Swarm is easy to setup and configure</td>
+    <td>Kubernetes is hard to setup and configure.</td>
+  </tr>
+  <tr>
+    <td> - </td>
+    <td>Health Checks are limited to service.</td>
+    <td>Health Checks are of 2 types: liveness & Readiness</td>
+  </tr>
+</table>
+
+### What ports are used by Docker Swarm?
+
+- `TCP Port 2377`: This port is used for communication between the nodes and the manager.
+- `TCP and UDP Port 2376`: This port is used by worker nodes.
