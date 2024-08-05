@@ -490,3 +490,74 @@ services:
   docker run -d --name <container-name> --label env=prod alpine
   docker inspect <container-name> # To view the labels
   ```
+
+### What are `tasks` and `services` in Docker Swarm?
+
+- `Services`
+
+  - `Services` are a higher level abstraction used to define how containers should be deployed, managed and scaled across a swarm of Docker nodes.
+  - It includes the number of replicas, network, storage configurations and load balancing configurations.
+  - Example:
+
+    ```shell
+    docker service create --name <service-name> --replicas <number-of-replicas> <image-name>
+    docker service ls # To list the services
+    ```
+
+- `Tasks`
+
+  - `Tasks` are individual instances of a container that is created or managed by a service.
+  - Each `task` represents a single unit of work that is run on a node in the swarm.
+  - Example:
+
+    ```shell
+    docker service ps <service-name> # To list the tasks of a service
+    ```
+
+### How does Docker Swarm work?
+
+
+![](./imgs/docker-swarm-mode.webp)
+
+- When we want want to deploy a container in the swarm first, we have to launch services.
+- Services consist of multiple containers of the same image.
+- These services are deployed inside a node, so to deploy a swarm, atleast one node is required.
+- The manager node is responsible for allocation, dispatching and scheduling the tasks.
+- API in the manager is the medium b/w manager node and the worker node to communicate with each other using HTTP protocol.
+- The Service of one cluster can be used by other .
+- The execution of task is performed by the worker node.
+
+### `docker swarm init`
+
+- To initialize a docker swarm cluster we use command called `docker swarm init`.
+- This will convert the docker engine into a swarm manager.
+- After Initialization:
+
+  - It brings the swarm into existence.
+  - It will convert the current node into a manager node.
+  - And, will generate a token which will be used to join the worker nodes to the swarm.
+
+### `Docker Swarm` Architecture
+
+- `Manager Node`
+
+  - The manager node is responsible for the allocation, dispatching and scheduling of the tasks.
+  - It is responsible for the management of the worker nodes.
+  - It is responsible for the management of the services and the tasks.
+
+- `Worker Node`
+
+  - The worker node is responsible for the execution of the tasks.
+  - It is responsible for the execution of the services.
+  - It is responsible for the execution of the containers.
+
+- A single manager node can have multiple worker nodes. But, a worker node cannot exist without a manager node.
+- The ideal number of manager node count is 7. Increasing the number of manager nodes does not mean a increase in scalability.
+
+
+### Features of Docker Swarm
+
+1. Cluster Mangement: To create swarm, we can use `Docker Engine CLI` where we can deploy applications. Additional orchestration software is not required to manage a swarm.
+2. Multi-Host Networking: Swarm can containe multiple overlay networks, so while deploying the service you can specify the network on which you want to deploy your service. The swarm manager automatically assigns addresses to the containers on the overlay network when it initializes or updates the application.
+3. Load Balancing: While deploying a service on any specific port , the swarm automatically balances the load on the port.
+4. Scaling: When we scale up or down, the swarm manager automatcally adapts by adding or removing tasks to maintain the desired state.
