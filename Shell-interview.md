@@ -138,6 +138,16 @@
   crontab -r # remove the crontab file
   ```
 
+  - `cron.deny` and `cron.allow` are two files in the `/etc/cron.d` directory that controls access to the crontab command. 
+  - Crontab command tasks such as creating, editing, displaying, or removing crontab files are relegated to specific users through these files
+  - Both files usually consist of a list of user names, one user name per line. 
+  - Together, these access control files perform the following functions:
+
+  - cron.allow decides which users are allowed to run the crontab command.
+  - cron.deny decides which users are denied from using the crontab command.
+  - When `cron.allow` or `cron.deny` doesn't exist, superuser privileges are required to run it.
+
+
 ### `for loop` in shell scripting
 
 - `for loop` is used to iterate over a list of items and perform a set of commands for each item.
@@ -199,4 +209,28 @@
 
   ```bash
   command1 | command2 # output of command1 is passed as input to command2
+  ```
+
+### What is the use of `$!` ??
+
+- `$!` is used to get the process ID of the last command executed in the background.
+
+### Difference b/w `grep`, `find` and `sed` commands
+
+- `grep` is used to search for patterns in text files or streams.
+- `find` is used to search for files and directories based on various criteria.
+- `sed` is used to perform text transformations on an input stream.
+
+    ```bash
+    find –type  f # Command will find all the files
+    find  –type  d # Command will find all the directories
+    find .  –name file1.txt # Command will find file1.txt in the current directory.
+    ```
+
+### How to open a read-only file in vi editor?
+
+- To open a file in read-only mode in vi editor, use the following command:
+
+  ```bash
+  vi -R filename
   ```
