@@ -44,7 +44,7 @@
 
 ### What is index in Git ??
 
-- In Git, the “Index” (also called as the “Staging Area”) is a place where changes are temporarily stored before committing them to the repository.
+- In Git, the `Index` (also called as the “Staging Area”) is a place where changes are temporarily stored before committing them to the repository.
 - It permits you to select and prepare specific alterations from your working directory before properly saving them as part of the project’s history.
 
 ### How do you change the last commit in git?
@@ -55,6 +55,14 @@
 
 - `git checkout` helps you switch between branches or return files to a previous state in Git.
 - Now, it is suggested to use ‘git switch’ for changing branches and ‘git restore’ to return files.
+- Example:
+  
+  ```bash
+  git checkout branch_name # Switches to the branch_name or creates a new branch.
+  git checkout -b new_branch_name # Creates a new branch and switches to it.
+  git checkout -b new_branch old_branch # Creates a new branch from old_branch and switches to it.
+  git checkout file_name # Returns the file to the previous state.
+  ```
 
 ### Difference b/w `git fetch` and `git pull`
 
@@ -103,5 +111,94 @@
   git stash apply # Applies the last stash, but does not remove it from the list.
   git stash apply stash@{1} # Applies the stash at index 1.
   git stash clear # Removes all the stashes.
-
   ```
+
+### Difference b/w `reverting` and `resetting`
+
+- `git revert` undos a commit by creating a new commit.
+- Example:
+  
+  ```bash
+  git revert HEAD # Reverts the last commit.
+  git revert HEAD~2 # Reverts the last 2 commits.
+  ```
+
+- `git reset` undos changes by moving the HEAD and branch pointers to a previous commit.
+- Example:
+  
+  ```bash
+  git reset HEAD~1 # Resets the HEAD to the last commit.
+  git reset --hard HEAD~1 # Resets the HEAD to the last commit and removes all the changes.
+  ```
+
+### Difference b/w `git reflog` and `git log`
+
+- `git reflog`
+
+  - `git reflog` shows a log of changes to the HEAD reference.
+  - permits you to see the history of changes to the HEAD reference, even if you have changed branches or commits.
+  - effective for recovering lost commits or branches that are no longer visible in the `git log`.
+
+- `git log`
+
+  - `git log` shows history of commits made in the repository.
+  - lists out commits in linear order.
+
+### What is `HEAD` in Git ??
+
+- `HEAD` is a reference to the last commit in the currently checked-out branch.
+- shows the recent commit in the current branch.
+
+### What is purpose of `git tag -a` ??
+
+- `git tag -a` is used to create an annotated tag in Git.
+- Annotated tags are tags that contain additional metadata such as the tagger’s name, email, date, and a message. 
+- They are valuable for labeling important points in history, like releases, and give another context compared to lightweight tags made with `git tag`.
+
+### What is `Working tree` in Git ??
+
+- The working tree is the directory where you are currently working or modifying.
+
+### What language is used in git ??
+
+- Git is written in C language.
+- It's Data structures and algorithms are written in C.
+
+### What is `git diff` ??
+
+- `git diff` is command used to present the difference b/w the working directory, staging area, and the last commit.
+
+
+### What is Git Object Model ??
+
+- There are 4 objects in Git Object Model:
+  
+  - `Blob` - It stores the file data.
+  - `Tree` - It stores the file structure.
+  - `Commit` - It stores the commit object.
+  - `Tag` - It stores the tag object.
+
+### How does Git store data ??
+
+- Git stores data by saving snapshots of the project over time.
+- Each snapshot is a commit, which covers information about blobs and trees.
+- These snapshots are identified by unique hashes, creating it easy to track changes and retrieve history.
+
+### What is meant by `detached HEAD` in Git ??
+
+- `Detached HEAD` is a state in Git where the HEAD points to a commit instead of a branch.
+- Changes made in this state are not attached to any branch, and can be lost if not saved.
+
+### What is `git cherry-pick` ??
+
+- `git cherry-pick` is a command used to apply a commit from one branch to another.
+- It is useful when you want to apply a single commit from one branch to another.
+- Example:
+  
+  ```bash
+  git cherry-pick commit_hash # Applies the commit with commit_hash to the current branch.
+  ```
+
+- But, be careful while using this command, as it can lead to conflicts.
+- Also, it's very complex to use this command in case of merge commits.
+- It's better to use `git rebase` in such cases.
