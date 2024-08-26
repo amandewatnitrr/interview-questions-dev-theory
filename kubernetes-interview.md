@@ -101,4 +101,81 @@
 
 ### What is `kubectl` ?
 
-- `Kubelet` is important component of Kubernetes, that manages containers 
+- `Kubelet` is important component of Kubernetes, that manages containers within pods on a node.
+- It registers the node with the API server, watches for pods that have been assigned to its node, and then ensures that the containers in those pods are running and healthy.
+- Deployments can help to scale efficiently scale the number of replica pods, enable the rollout of updated code in a controlled manner, or rollback to a previous version of the deployment, if necessary.
+
+- Example:
+
+  ```yml
+  apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: # Name of the deployment
+    spec:
+        replicas: 3
+        selector:
+            matchLabels:
+            app: # Name of the application
+        template:
+            metadata:
+            labels:
+                app: # Name of the application
+            spec:
+            containers:
+            - name: # Name of the container
+                image: # Image of the container
+  ```
+
+### Difference b/w StatefulSet and Deployment in Kubernetes?
+
+<table>
+    <tr>
+        <th>StatefulSet</th>
+        <th>Deployment</th>
+    </tr>
+    <tr>
+        <td>A collection of identical stateful pods are handeled by the resource.</td>
+        <td>Resource Controls Identical Pod deployment.</td>
+    </tr>
+    <tr>
+        <td>helpful in managing stateful applications that need persistent storage with dependable network ID</td>
+        <td>Enable's to control application state, and ensure the right number of replicas are always up and running.</td>
+    </tr>
+</table>
+
+### Services in Kubernetes
+
+- Services are the unified way of accessing the workloads on the pods.
+- The idea is to group a set of pods endpoints into a single resource.
+- Example:
+
+  ```yaml
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: # Name of the service
+  spec:
+    selector:
+      app: # Name of the application
+    ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  ```
+
+### How does Kubernetes manage configuration ?
+
+- Kubernetes uses ConfigMaps and Secrets to manage configuration.
+- `ConfigMaps` are used to store non-sensitive data in key-value pairs.
+- `Secrets` are used to store sensitive data in key-value pairs.
+- These resources have different configurtation from the application code, making updates easier.
+- Both are defined in YAML files, and applied to cluster using `kubectl`.
+- Kubernetes tracks changes in these resources, triggering updates in pods without needing changes to the application code.
+
+### Describe role of Master node in Kubernetes
+
+- The Master Node is the main node in the Kubernetes cluster.
+- It is responsible for cluster management and providing the API that is used to configure and manage resources within the Kubernetes Cluster.
+
+###
