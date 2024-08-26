@@ -46,7 +46,7 @@
     ./user/file.txt
     ```
 
-### What is the shebang (#!) line in a shell script ?
+### What is the `shebang (#!)` line in a shell script ?
 
 - `shebang line` (`#!`) is a special line at the beginning of a shell script that indicates the path to the shell interpreter that should be used to execute the script.
 
@@ -234,3 +234,110 @@
   ```bash
   vi -R filename
   ```
+
+# Storage Terminology and Concepts in Linux
+
+### What is Block Storage ??
+
+- `Block Storage` is another name what linux kernel calls as a `block device`.
+- `Block Device` is a piece of hardware used to sotre data, more like a traditional hard drive.
+- It is called `Block Device` because the kernel interfaces with the hardware by referencing fixed-size blocks.
+
+### What are disk partitions ??
+
+- When partitioning a disk, it is important to know what partitioning format is used. This generally comes down to choice b/w MBR and GPT.
+- MBR being old, and having space limitations including the fact it can have at max only 4 partitions, GPT is the new standard.
+
+### Formatting and File Systems
+
+- `Formatting` is the process of writting a filesystem to a disk, and preparing it for operations.
+- A `File System` is a system that structures data and how information is written to or read from the underlying disk.
+
+### Popular File Systems
+
+- `Ext4`
+
+  - Succesor of `Ext3` and `Ext2`.
+  - journaled, and backwards compatible with legacy systems.
+  - Good choice, if there's no specialised needs
+
+- `XFS`
+
+  - Specializes in performance, and large data files.
+  - formats quickly, and has good throughput for large files.
+  - uses metadata journaling, instead of full journaling.
+  - fast performance, but can lead to data loss in case of power failure.
+
+- `Btrfs`
+
+  - modern, feature-rich and copy-on-write filesystem.
+  - allows for volume management functionality.
+  - Used by default on some Network Attached Storage (NAS) devices.
+
+- `ZFS`
+
+  - copy-on-write filesystem, and volume manager.
+  - Data Integrity features, and supports snapshots and clones.
+  - Can organize volume into RAID arrays, for redundancy and performance purposes.
+
+### How Linux manages storage devices
+
+- In Linux, everything is represented by a file somewhere in the filesystem hierarchy.
+- The storage devices are represented as files in the `/dev` directory either using the keyword `sd` or `hd` followed by a letter representing the device.
+- For example, the first hard disk is represented as `/dev/sda`, and its partitions are represented as `/dev/sda1`, `/dev/sda2`, etc.
+
+- While `/dev/sd*` and `/dev/hd*` are used to represent storage devices, there is a majore disadvantage to this approach.
+- The Linux kernel decides which device gets which name on each boot, so this can lead to scenario where device changes device nodes.
+- To solve this issue, the `/dev/disk/` directory contains more specific ways to identify disks and partitions on the system.
+
+### Mounting
+
+- `Mounting` is the process of attaching a drive to a directory in the filesystem.
+- Drives are always mounted on dedicated empty directories
+- We can mount a drive using the `mount` command.
+
+  ```bash
+  mount /dev/sdb1 /mnt
+  ```
+
+- We can make mounts permanent by adding them to the `/etc/fstab`  filesystem table file, which filesystems to mount at boot time.
+
+  ```bash
+  /dev/sdb1 /mnt ext4 defaults 0 0
+  ```
+
+  Filesytems that donot have entry in this file, will not be mounted automatically unless scripted by some one else, or some other software.
+
+### RAID (Redundant Array of Independent Disks)
+
+- RAID is a storage management and virtualization technology that allows us to group drives together and manage them as a single unit with additional capabilities.
+
+  The characteristics of RAID depend on the level of RAID used, which define how disks in the array relate to each other.
+
+  - `RAID 0` - Striping
+
+    - Data is written in array, split up and distributed linearly among disks.
+    - offers performance boost as multiple disks can be written to or read from simultaneously.
+    - Single drive failure can lead to data loss in entire array.
+    - As, no single disk contain all the data to rebuild the contents.
+    - Therefore, never used in production for this reason.
+
+  - `RAID 1` - Mirroring
+
+    - Anything written to RAID 1 array is written to multiple disks.
+    - Major issue is data redundancy, which kind of helps it in surrviving any data loss
+    - Multiple drives contain the exact same data.
+
+  - `RAID 5`
+
+    - stripes data across multiple drives, similar to RAID 0.
+    - implements distributed parity across all drives in the array.
+    - This means if any one of the drives fail, it can be rebuild using the parity information stored on the other drives.
+    - Reduces the available space by 1 disk
+
+  - `RAID 10`
+
+    - combination of levels 1 and 0
+    - 2 set of mirriored arrays are made and data is stripped across them
+    - Creates an array that has some data redundancy characteristics while providing good performance.
+    - requires quite a few drives.
