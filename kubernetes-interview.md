@@ -178,4 +178,198 @@
 - The Master Node is the main node in the Kubernetes cluster.
 - It is responsible for cluster management and providing the API that is used to configure and manage resources within the Kubernetes Cluster.
 
-###
+### What is the role of kube-proxy in Kubernetes ?
+
+- The netwroking part of kubernetes that enables communication b/w pods and services is called `kube-proxy`.
+- It may be installed on any cluster node
+- It maintains network rules for service-to-pod mapping, which provides communication to and from Kubernetes Cluster.
+
+### Explain the concept of Ingress in Kubernetes
+
+- Ingress is a Kubernetes API object that is used to expose HTTP & HTTPS routes from outside the Kubernetes Cluster to the services inside the cluster.
+- It provides single entry point into a cluster hence making it simpler to manage applications and troubleshoot routing issues.
+- The HTTP/HTTPS request that comes to the cluster first goes to the ingress, and than ingress forwards it to the service.
+
+#### Architecture of Ingress
+
+- Kubernetes Ingress acts like a traffic controller for managing the incoming traffic to the Kubernetes Cluster.
+- It manages the external access to services within the kubernetes. 
+
+  ![](./imgs/Kubernetes-Ingress-Architecture-(1).webp)
+  
+- The Kubernetes ingress Controller helps with the following things:
+
+  - Routing: Defines rules in the Routing Table for external HTTP & HTTP traffic to the inside kubernetes cluster services based on the hostname and paths to different services in the cluster.
+  - Load Balancing: It helps in distributing the incoming traffic to mutiple services and pods in the cluster.
+  - TLS Termination: handles SSL/TLS termination by allowing to encrypt the traffic from outside the cluster to our services.
+  - Reverse Proxy: It functions as a reverse proxy, forwarding requests from clients to appropriate services based on the rules defined.
+
+- Example:
+
+  Use `minikube start` to start the cluster.
+
+  Now, Install the ingress controller on minikube using the command `minikube addons enable ingress`.
+
+  This will automatically configure or start Kuberenetes NGINX Implementation of ingress controller.
+
+  Now, we need to create a ingress rule that the controller can evaluate.
+
+  For, this we first check the list of namespaces using the command `kubectl get ns`
+
+  If you don't have it already use the command `minikube dashbaord` to get `kubernetes-dashbaord` namespace.
+
+  We can now check all the components inside the `kubernetes-dashbaord` using the command `kubectl get all -ns kubsernetes-dashbaord`.
+
+  Now, create the ingress rule for the namespace kubernetes-dashboard.
+
+  `ingres.yml`
+
+  ```yaml
+    apiVersion: networking.k8s.io/v1
+    kind: Ingress
+    metadata:
+      name: # Name of the Ingress
+      namespace:
+    spec:
+        rules:
+        - host: # Hostname
+            http:
+            paths:
+    ```
+
+    Use the command `kubectl apply -f ingress.yml` to apply the configuration.
+
+    To verify use the command `kubectl get ingress`. Note down the IP ADDRESS shown.
+
+    Now, if you want you can map this IP Address to a certain domain as follows:
+
+    Use the command `sudo vim /etc/hosts`, and than add `[IP_ADDRESS] domain.extension` to it. Now, when you visit this domain, we can see the kubernetes dashboard there.
+
+#### Types of Ingress
+
+- There are mainly 3 types of Ingress, each having it's own merits and demerits.
+
+  - `Physical Ingress`: involves gaining physical access to a system or network bypassing the physical security measures
+  - `Network Ingress`: occurs when attackers gain access of a network through vulnerabilites in the infrastructure such as unsecured wifi attacks, open ports or weak passwords.
+  - `Software Ingress`: involves exploiting vulnerabilities in software applications or operating system to authourize access to a system or a network .
+
+### What is a Ingress Controller?
+
+- Ingress controller is a component in kubernetes that is responsible for evaluation and processing of ingress routes.
+- It acts as a Reverse Proxy and, Load Balancer.
+- In order to make this ingress controller work, we need implementation of ingress and that is called Ingress Controller.
+- Therefore before configuring ingress to a cluster we need to install.
+
+#### List of Ingrees Controllers
+
+- Nginx Ingress Controller:
+
+  - It is a popular ingress controller that uses Nginx as a reverse proxy.
+  - Configures NGINX to route traffic to kubernetes services
+  - It is a high performance edge proxy with a small memory footprint.
+  - It is a good choice for small to medium-sized deployments.
+
+- Traefik Ingress Controller:
+
+  - It is a modern HTTP reverse proxy and load balancer that makes deploying microservices easy.
+  - It is a cloud-native edge router that can route traffic to different services based on the request.
+  - It is a good choice for large deployments.
+
+- HAProxy Ingress Controller:
+
+  - It is a high-performance TCP/HTTP load balancer.
+  - It utilizes the HAProxy as it's undrelying proxy for handling incoming traffic.
+  - Highly Configurable and suitable for complex routing requirements
+  - It is a good choice for large deployments.
+
+- Countour:
+
+  - It is built on the Envoy Proxy.
+  - Works seamlessly with Kubernetes offering HTTPS/2 and TLS Termination.
+
+### Difference b/w NodePort, Ingress and Load Balancer
+
+<table>
+    <tr>
+        <th>Ingress</th>
+        <th>NodeProt</th>
+        <th>Load Balancer</th>
+    </tr>
+    <tr>
+        <td>Ingress is a Kubernetes API object that is used to expose HTTP and HTTPS routes from outside the cluster to services inside the cluster.</td>
+        <td>NodePort is a Service that is accessible on a static Port on each Worker Node in the cluster.</td>
+        <td>Load Balancer Service type allows the Service to become accessible externally through a Cloud Provider’s Load Balancer functionality.</td>
+    </tr>
+    <tr>
+        <td>Ingress provides a single entry point into a cluster hence making it simpler to manage applications and troubleshoot routing issues</td>
+        <td>NodePort Service makes the external traffic accessible on static or fixed port on each worker Node</td>
+        <td>LoadBalancer Service is an extension of NodePort Service. Load Balancing is the process of dividing a set of tasks over a set of resources in order to make the process fast and efficient.</td>
+    </tr>
+    <tr>
+        <td>Ingress is configured with the help of rules that define how to route traffic to different services based on hostnames or paths.</td>
+        <td>NodePort is configured by specifying the NodePort and the target port for the service.</td>
+        <td>LoadBalancer is als configured same as NodePort.</td>
+    </tr>
+    <tr>
+        <td>No specific port range is defined for Ingress.</td>
+        <td>NodePort range is between 30000-32767</td>
+        <td>LoadBalancer uses standard HTTP and HTTPS ports</td>
+    </tr>
+</table>
+
+### What is the role of `etcd` in Kubernetes?
+
+- Etcd is the cluster brain that maintains records of all cluster information, which includes the desired state, the current state, resource configurations, and runtime data.
+- It is the cluster brain that informs other processes that including the Scheduler about changes in the cluster state and availability of resources.
+
+### What is a Namespace in Kubernetes?
+
+- Namespaces permit Kubernetes clusters to be organized into virtual sub-clusters, which is useful in situations where a cluster is utilized by several teams or projects. 
+- Namespaces allow a cluster to be structured in any number of ways, with each namespace providing logical segregation from the others while maintaining the ability to speak across namespaces.
+
+### Explain the use of Labels and Selectors in Kubernetes.
+
+- Labels and Selectors are essential sections in Kubernetes configuration files for deployments and services because of the way they link Kubernetes services to pods.
+- Labels are key-value pairs that identify pods distinctly; the deployment assigns these labels and uses them as a starting point for the pod prior to its creation, and the Selector matches these labels.
+- Labels and selectors combine to create connections between deployments, pods, and services in Kubernetes.
+
+### What is Persistent Volume in Kubernetes?
+
+- A Persistent Volume (PV) in Kubernetes is an object that allows pods to access storage from a defined device.
+- This device is usually described via a Kubernetes StorageClass.
+- When a PV is created individually, it is generated and designated to the specified storage device.
+- This method wins out over pretreated storage classes because it gives a better understanding of the workflow.
+- Example:
+
+  ```shell
+    apiVersion: v1
+    kind: PersistentVolume
+    metadata:
+      name: pv0001
+    spec:
+        capacity:
+            storage: 5Gi
+        volumeMode: Filesystem
+        accessModes:
+            - ReadWriteOnce
+        persistentVolumeReclaimPolicy: Retain
+        hostPath:
+            path: /data
+        storageClassName: slow
+        mountOptions:
+            - hard
+            - nfsvers=4.1
+        nfs:
+  ```
+
+### Explain the differences between a DaemonSet and a ReplicaSet
+
+- ReplicaSet
+
+  - On any node, ReplicaSet will make sure that the number of operating pods in the Kubernetes cluster match the number of pods that is planned.
+  - Replicaset most suitable for applications like web applications which are stateless.
+
+- DaemonSet
+
+  - Every node will have just the minimum of one pod of the application that we deployed because of DaemonSet.
+  - Stateful applications are best fits for it.
