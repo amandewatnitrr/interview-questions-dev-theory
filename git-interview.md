@@ -1,4 +1,4 @@
-# React.Js Interview Questions
+# Git Interview Questions
 
 ### What is Git ?
 

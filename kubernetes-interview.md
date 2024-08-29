@@ -373,3 +373,60 @@
 
   - Every node will have just the minimum of one pod of the application that we deployed because of DaemonSet.
   - Stateful applications are best fits for it.
+
+### How do we control the resource usage of POD ?
+
+- With the use of limit and request resource usage of a POD can be controlled.
+
+  - Request:
+
+    - The number of resources being requested for a container.
+    - If a container exceeds its request for resources, it can be throttled back down to its request.
+
+  - Limit:
+
+    - An upper cap on the resources a single container can use.
+    - If it tries to exceed this predefined limit it can be terminated if K8's decides that another container needs these resources.
+    - If you are sensitive towards pod restarts, it makes sense to have the sum of all container resource limits equal to or less than the total resource capacity for your cluster.
+  
+  - Example:
+
+    ```yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+    name: demo
+    spec:
+    containers:
+      - name: example1
+      image: example/example1
+      resources:
+        requests:
+          memory: "_Mi"
+          cpu: "_m"
+        limits:
+          memory: "_Mi"
+          cpu: "_m"
+    ```
+
+### What are the various K8's services running on nodes and describe the role of each service?
+
+- Mainly K8 cluster consists of two types of nodes, executor and master.
+
+  - Executor node: (This runs on master node)
+
+    - `kube-proxy`:
+
+      - This service is responsible for the communication of pods within the cluster and to the outside network, which runs on every node.
+
+      - This service is responsible to maintain network protocols when your pod establishes a network communication.
+
+    - `kubelet`:
+      - Each node has a running kubelet service that updates the running node accordingly with the configuration(YAML or JSON) file.
+      - NOTE: kubelet service is only for containers created by Kubernetes.
+
+  - Master services:
+
+    - `kube-apiserver`: Master API service which acts as an entry point to K8 cluster.
+    - `kube-scheduler`: Schedule PODs according to available resources on executor nodes.
+    - `kube-controller-manager`:  is a control loop that watches the shared state of the cluster through the apiserver and makes changes attempting to move the current state towards the desired stable state
