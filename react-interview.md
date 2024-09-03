@@ -90,7 +90,6 @@
 
 Note: You can also use reusable react error boundary third-party component without writing any class. i.e, No need to use class components for Error boundaries.
 
-
 ## What are pure components?
 
 - Pure components are the components that do not re-render if the state or props of the component has not changed.
