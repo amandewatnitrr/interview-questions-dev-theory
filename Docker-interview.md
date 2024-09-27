@@ -84,12 +84,13 @@
   - Example: `RUN apt-get install python3`
 
 - `CMD` - Sets default command and parameters.
-  - Can be overridden from command line when docker container runs.
+  - Can be overridden from the Docker command line interface (CLI) while running a Docker container.
   - Shell form: `CMD <command>`
   - Exec form: `CMD ["executable", "param1", "param2"]`
   - Example: `CMD ["python3", "app.py"]`
 
 - `ENTRYPOINT` - Allows you to configure a container that will run as an executable.
+  - Sets default parameters that cannot be overridden while executing Docker containers with CLI parameters.
   - Entrypoint arguments are always used, and are appended to the end of the command.
   - Shell form: `ENTRYPOINT <command>`
   - Exec form: `ENTRYPOINT ["executable", "param1", "param2"]`
