@@ -430,3 +430,22 @@
     - `kube-apiserver`: Master API service which acts as an entry point to K8 cluster.
     - `kube-scheduler`: Schedule PODs according to available resources on executor nodes.
     - `kube-controller-manager`:  is a control loop that watches the shared state of the cluster through the apiserver and makes changes attempting to move the current state towards the desired stable state
+
+### Count the number of stopped, running, and pending pods in a namespace
+
+- To count the number of stopped, running, and pending pods in a namespace, you can use the following command:
+
+  ```shell
+  > pending= $(kubectl get pods --all-namespaces --field-selector=status.phase=pending --no-headers | wc -l)
+  > running= $(kubectl get pods --all-namespaces --field-selector=status.phase=Running --no-headers | wc -l)
+  > stopped= $(kubectl get pods --all-namespaces --field-selector=status.phase=Stopped --no-headers | wc -l)
+  > echo "Pending: $pending, Running: $running, Stopped: $stopped"
+  ```
+  
+  Here,
+
+  - `--all-namespaces` is used to get the list of pods in all namespaces.
+  - `--field-selector=status.phase=<status>` is used to get the list of pods with the specified status.
+  - `--no-headers` is used to remove the headers from the output.
+  - `wc -l` is used to count the number of lines in the output.
+  - `kubectl get pods --all-namespaces --field-selector=status.phase=<status> --no-headers` is used to get the list of pods in the specified namespace with the specified status.

@@ -28,6 +28,23 @@
 - Shell is a command-line interpreter that interprets the commands entered by the user and executes them.
 - Terminal is a UI that provides an interface to interact with the shell.
 
+### What is difference between shell and kernel?
+
+- Shell is a command-line interpreter that interprets the commands entered by the user and executes them.
+- Kernel is the core of the operating system that manages system resources and provides an interface for user-level processes to interact with hardware.
+
+### What are subshells in shell scripting?
+
+- A subshell is a child process created by the shell to execute a sequence of commands.
+- It is used to isolate a group of commands from the parent shell.
+- Example:
+
+  ```bash
+  > (command1; command2)
+  # Example
+  > (cd /path/to/directory; ls -a)
+  ```
+
 ### Difference with Absolute and Relative path
 
 - Absolute Paths: It starts from the root directory and specifies the full path to the file or directory.
@@ -67,6 +84,42 @@
   echo $HOME
   echo $$
   ```
+
+### Count the number of files and directories in a directory
+
+- To count the number of files and directories in a directory, you can use the following command:
+
+  ```bash
+  ls -1A | wc -l
+  ```
+
+  Here,
+
+  - `-1` lists one file per line.
+  - `-A` lists all files except `.` and `..`.
+  - `wc -l` counts the number of lines.
+
+- If we want to count the number of files only, we can use the following command:
+
+  ```bash
+  find . -type f | wc -l
+  ```
+
+  Here,
+
+  - `. -type f` finds all files in the current directory.
+  - `wc -l` counts the number of lines.
+
+- If we want to count the number of directories only, we can use the following command:
+
+  ```bash
+  find . -type d | wc -l
+  ```
+
+  Here,
+
+  - `. -type d` finds all directories in the current directory.
+  - `wc -l` counts the number of lines.
 
 ### Explain the difference between the `&&` and `||` operators in shell scripting
 
@@ -191,6 +244,7 @@
     ```bash
     ln -s file1 file2
     ```
+
 ### How can we run a shell script in the background?
 
 - To run a shell script in the background, append an `&` at the end of the command.
@@ -341,3 +395,29 @@
     - 2 set of mirriored arrays are made and data is stripped across them
     - Creates an array that has some data redundancy characteristics while providing good performance.
     - requires quite a few drives.
+
+### How to view which process is using which port in Linux
+
+- To view which process is using a specific port in Linux, you can use the `netstat` or `ss` command.
+
+  ```bash
+  netstat -tuln | grep :port_number
+  # This will show the process ID and name of the process using the specified port.
+  ss -tuln | grep :port_number
+  # This will show the process ID and name of the process using the specified port.
+  ```
+
+  The Output would look something like this:
+
+  ```bash
+  Netid  State      Recv-Q Send-Q  Local Address:Port   Peer Address:Port  Process
+  tcp    LISTEN     0      128     0.0.0.0:4000        0.0.0.0:*           users:(("nxserver.bin",pid=12345,fd=15))
+  ```
+
+  Here,
+
+  - `-t` shows TCP ports.
+  - `-u` shows UDP ports.
+  - `-l` shows listening ports.
+  - `-n` shows numerical addresses.
+  - `-p` shows the process ID and name.
